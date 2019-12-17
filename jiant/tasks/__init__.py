@@ -95,3 +95,8 @@ ALL_SEQ2SEQ_TASKS = ["seg_wix"]
 # people are mostly using nli-prob for now, but we will change to
 # using individual tasks later, so better to have as a list
 ALL_NLI_PROBING_TASKS = ["nli-prob", "nps", "nli-prob-prepswap", "nli-prob-negation", "nli-alt"]
+ALL_SENT_EVAL_TASKS = ["sst5", "mr0", "mr1", "mr2", "mr3", "mr4",
+                       "cr0", "cr1", "cr2", "cr3", "cr4",
+                       "subj0", "subj1", "subj2", "subj3", "subj4",
+                       "mpqa0", "mpqa1", "mpqa2", "mpqa3", "mpqa4",
+                       "trec", "sick-r", "sick-e"]

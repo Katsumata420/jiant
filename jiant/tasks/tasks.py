@@ -439,6 +439,48 @@ class RankingTask(Task):
 
     pass
 
+@register_task("sst5", rel_path="SST-5/")
+class SST5Task(SingleClassificationTask):
+    def __init__(self, path, max_seq_len, name, **kw):
+        super(SST5Task, self).__init__(name, n_classes=5, **kw)
+        self.path = path
+        self.max_seq_len = max_seq_len
+
+        self.train_data_text = None
+        self.val_data_text = None
+        self.test_data_text = None
+    
+    def load_data(self):
+        self.train_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "train.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=1,
+            s2_idx=None,
+            label_idx=0,
+            skip_rows=1,
+        )
+        self.val_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "dev.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=1,
+            s2_idx=None,
+            label_idx=0,
+            skip_rows=1,
+        )
+        self.test_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "test.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=1,
+            s2_idx=None,
+            has_labels=False,
+            return_indices=True,
+            skip_rows=1,
+        )
+        self.sentences = self.train_data_text[0] + self.val_data_text[0]
+        log.info("\tFinnished loading SST-5 data.")
 
 @register_task("sst", rel_path="SST-2/")
 class SSTTask(SingleClassificationTask):
@@ -485,8 +527,124 @@ class SSTTask(SingleClassificationTask):
             skip_rows=1,
         )
         self.sentences = self.train_data_text[0] + self.val_data_text[0]
-        log.info("\tFinished loading SST data.")
+        log.info("\tFinished loading SST-like data.")
 
+@register_task("mr0", rel_path="MR/0-fold/")
+@register_task("mr1", rel_path="MR/1-fold/")
+@register_task("mr2", rel_path="MR/2-fold/")
+@register_task("mr3", rel_path="MR/3-fold/")
+@register_task("mr4", rel_path="MR/4-fold/")
+@register_task("cr0", rel_path="CR/0-fold/")
+@register_task("cr1", rel_path="CR/1-fold/")
+@register_task("cr2", rel_path="CR/2-fold/")
+@register_task("cr3", rel_path="CR/3-fold/")
+@register_task("cr4", rel_path="CR/4-fold/")
+@register_task("subj0", rel_path="SUBJ/0-fold/")
+@register_task("subj1", rel_path="SUBJ/1-fold/")
+@register_task("subj2", rel_path="SUBJ/2-fold/")
+@register_task("subj3", rel_path="SUBJ/3-fold/")
+@register_task("subj4", rel_path="SUBJ/4-fold/")
+@register_task("mpqa0", rel_path="MPQA/0-fold/")
+@register_task("mpqa1", rel_path="MPQA/1-fold/")
+@register_task("mpqa2", rel_path="MPQA/2-fold/")
+@register_task("mpqa3", rel_path="MPQA/3-fold/")
+@register_task("mpqa4", rel_path="MPQA/4-fold/")
+class BinTask(SingleClassificationTask):
+    """ Task class for MR; CR; SUBJ; MPQA  """
+
+    def __init__(self, path, max_seq_len, name, **kw):
+        """ """
+        super(BinTask, self).__init__(name, n_classes=2, **kw)
+        self.path = path
+        self.max_seq_len = max_seq_len
+
+        self.train_data_text = None
+        self.val_data_text = None
+        self.test_data_text = None
+
+    def load_data(self):
+        """ Load data """
+        self.train_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "train.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=0,
+            s2_idx=None,
+            label_idx=1,
+            skip_rows=1,
+        )
+        self.val_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "dev.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=0,
+            s2_idx=None,
+            label_idx=1,
+            skip_rows=1,
+        )
+        self.test_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "test.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=0,
+            s2_idx=None,
+            has_labels=False,
+            return_indices=True,
+            skip_rows=1,
+        )
+        self.sentences = self.train_data_text[0] + self.val_data_text[0]
+        log.info("\tFinished loading binary task data.")
+
+@register_task("trec", rel_path="TREC/")
+class TRECTask(SingleClassificationTask):
+    """ Task class for Stanford Sentiment Treebank.  """
+
+    def __init__(self, path, max_seq_len, name, **kw):
+        """ """
+        super(TRECTask, self).__init__(name, n_classes=6, **kw)
+        self.path = path
+        self.max_seq_len = max_seq_len
+
+        self.train_data_text = None
+        self.val_data_text = None
+        self.test_data_text = None
+
+    def load_data(self):
+        """ Load data """
+        targ_map = {"ABBR": 0, "DESC": 1, "ENTY": 2,
+                    "HUM": 3, "LOC": 4, "NUM": 5}
+        self.train_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "train.tsv"),
+            max_seq_len=self.max_seq_len,
+            label_fn=targ_map.__getitem__,
+            s1_idx=1,
+            s2_idx=None,
+            label_idx=0,
+            skip_rows=1,
+        )
+        self.val_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "dev.tsv"),
+            max_seq_len=self.max_seq_len,
+            label_fn=targ_map.__getitem__,
+            s1_idx=1,
+            s2_idx=None,
+            label_idx=0,
+            skip_rows=1,
+        )
+        self.test_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "test.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=1,
+            s2_idx=None,
+            has_labels=False,
+            return_indices=True,
+            skip_rows=1,
+        )
+        self.sentences = self.train_data_text[0] + self.val_data_text[0]
+        log.info("\tFinished loading TREC data.")
 
 @register_task("npi_adv_li", rel_path="NPI/probing/adverbs/licensor")
 @register_task("npi_adv_sc", rel_path="NPI/probing/adverbs/scope_with_licensor")
@@ -1033,6 +1191,142 @@ class STSBTask(PairRegressionTask):
             is_symmetrical_pair=True,
         )
 
+@register_task("sick-r", rel_path="SICK/")
+class SICKRTask(PairRegressionTask):
+    """ Task class for Sentence Textual Similarity Benchmark.  """
+
+    def __init__(self, path, max_seq_len, name, **kw):
+        """ """
+        super(SICKRTask, self).__init__(name, **kw)
+        self.path = path
+        self.max_seq_len = max_seq_len
+
+        self.train_data_text = None
+        self.val_data_text = None
+        self.test_data_text = None
+
+        self.scorer1 = Correlation("pearson")
+        self.scorer2 = Correlation("spearman")
+        self.scorers = [self.scorer1, self.scorer2]
+        self.val_metric = "%s_corr" % self.name
+        self.val_metric_decreases = False
+
+    def load_data(self):
+        """ Load data """
+        # TODO: without normalization?    
+        ## score -> [1,5]
+        min_s = 1 # min score
+        max_s = 5 # max score
+        self.train_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "train.tsv"),
+            max_seq_len=self.max_seq_len,
+            skip_rows=1,
+            s1_idx=1,
+            s2_idx=2,
+            label_idx=3,
+            label_fn=lambda x: (float(x)-min_s) / (max_s-min_s),
+        )
+        self.val_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "dev.tsv"),
+            max_seq_len=self.max_seq_len,
+            skip_rows=1,
+            s1_idx=1,
+            s2_idx=2,
+            label_idx=3,
+            label_fn=lambda x: (float(x)-min_s) / (max_s-min_s),
+        )
+        self.test_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "test.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=1,
+            s2_idx=2,
+            has_labels=False,
+            return_indices=True,
+            skip_rows=1,
+        )
+        self.sentences = (
+            self.train_data_text[0]
+            + self.train_data_text[1]
+            + self.val_data_text[0]
+            + self.val_data_text[1]
+        )
+        log.info("\tFinished loading STS Benchmark data.")
+
+    def get_metrics(self, reset=False):
+        pearsonr = self.scorer1.get_metric(reset)
+        spearmanr = self.scorer2.get_metric(reset)
+        return {"corr": (pearsonr + spearmanr) / 2, "pearsonr": pearsonr, "spearmanr": spearmanr}
+
+    def process_split(
+        self, split, indexers, model_preprocessing_interface
+    ) -> Iterable[Type[Instance]]:
+        """ Process split text into a list of AllenNLP Instances. """
+        return process_single_pair_task_split(
+            split,
+            indexers,
+            model_preprocessing_interface,
+            is_pair=True,
+            classification=False,
+            is_symmetrical_pair=True,
+        )
+
+@register_task("sick-e", rel_path="SICK/")
+class SICKETask(PairClassificationTask):
+    """ Task class for Stanford Natural Language Inference """
+
+    def __init__(self, path, max_seq_len, name, **kw):
+        """ Do stuff """
+        super(SICKETask, self).__init__(name, n_classes=3, **kw)
+        self.path = path
+        self.max_seq_len = max_seq_len
+
+        self.train_data_text = None
+        self.val_data_text = None
+        self.test_data_text = None
+
+    def load_data(self):
+        """ Process the dataset located at path.  """
+        targ_map = {"NEUTRAL": 0, "ENTAILMENT": 1, "CONTRADICTION": 2}
+        self.train_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "train.tsv"),
+            max_seq_len=self.max_seq_len,
+            label_fn=targ_map.__getitem__,
+            s1_idx=1,
+            s2_idx=2,
+            label_idx=4,
+            skip_rows=1,
+        )
+        self.val_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "dev.tsv"),
+            max_seq_len=self.max_seq_len,
+            label_fn=targ_map.__getitem__,
+            s1_idx=1,
+            s2_idx=2,
+            label_idx=4,
+            skip_rows=1,
+        )
+        self.test_data_text = load_tsv(
+            self._tokenizer_name,
+            os.path.join(self.path, "test.tsv"),
+            max_seq_len=self.max_seq_len,
+            s1_idx=1,
+            s2_idx=2,
+            has_labels=False,
+            return_indices=True,
+            skip_rows=1,
+        )
+        self.sentences = (
+            self.train_data_text[0]
+            + self.train_data_text[1]
+            + self.val_data_text[0]
+            + self.val_data_text[1]
+        )
+        log.info("\tFinished loading SNLI data.")
 
 @register_task("snli", rel_path="SNLI/")
 class SNLITask(PairClassificationTask):

@@ -22,11 +22,12 @@
 # export JIANT_DATA_DIR=/Users/Bowman/Drive/JSALT/jiant/glue_data
 
 # The base directory for model output.
-export JIANT_PROJECT_PREFIX=~
+export JIANT_PROJECT_PREFIX=./project
 
 # Base directory in which to look for raw data subdirectories. This
 # could be the glue_data directory created by download_glue_data.py.
-export JIANT_DATA_DIR=~
+# export JIANT_DATA_DIR=./data/glue
+export JIANT_DATA_DIR=../another_data
 
 # A word embeddings file in GloVe/fastText format. Not used when using
 # ELMo, GPT, or BERT. To use more than one different set of embeddings
@@ -34,7 +35,7 @@ export JIANT_DATA_DIR=~
 # FASTTEXT_WORD_EMBS_FILE, and reference it in each of your .conf config
 # files with a line like:
 #     word_embs_file = ${FASTTEXT_WORD_EMBS_FILE}
-export WORD_EMBS_FILE=None
+export WORD_EMBS_FILE=./pretrained_model/w2v/glove.840B.300d.txt
 
 # Optional:
 # echo "Loaded custom config."

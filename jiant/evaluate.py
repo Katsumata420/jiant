@@ -159,6 +159,7 @@ def write_preds(
             + tasks_module.ALL_GLUE_TASKS
             + ["wmt"]
             + tasks_module.ALL_COLA_NPI_TASKS
+            + tasks_module.ALL_SENT_EVAL_TASKS
         )
 
         if task.name in glue_style_tasks:
