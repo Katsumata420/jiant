@@ -273,6 +273,11 @@ def build_model(args, vocab, pretrained_embs, tasks):
         log.info(f"Using XLM model ({args.input_module}).")
         embedder = XLMEmbedderModule(args)
         d_emb = embedder.get_output_dim()
+    elif args.input_module.startswith("albert-"):
+        from jiant.pytorch_transformers_interface.modules import AlbertEmbedderModule
+        log.info(f"Using Albert model ({args.input_module})")
+        embedder = AlbertEmbedderModule(args)
+        d_emb = embedder.get_output_dim()
     else:
         # Default case, used for ELMo, CoVe, word embeddings, etc.
         d_emb, embedder, cove_layer = build_embeddings(args, vocab, tasks, pretrained_embs)

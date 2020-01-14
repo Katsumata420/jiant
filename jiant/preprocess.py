@@ -39,6 +39,7 @@ from transformers import (
     GPT2Tokenizer,
     TransfoXLTokenizer,
     XLMTokenizer,
+    AlbertTokenizer,
 )
 
 from jiant.tasks import (
@@ -605,6 +606,8 @@ def add_pytorch_transformers_vocab(vocab, tokenizer_name):
         tokenizer = TransfoXLTokenizer.from_pretrained(tokenizer_name)
     elif tokenizer_name.startswith("xlm-"):
         tokenizer = XLMTokenizer.from_pretrained(tokenizer_name)
+    elif tokenizer_name.startswith("albert-"):
+        tokenizer = AlbertTokenizer.from_pretrained(tokenizer_name)
 
     if (
         tokenizer_name.startswith("openai-gpt")
@@ -687,6 +690,10 @@ class ModelPreprocessingInterface(object):
             from jiant.pytorch_transformers_interface.modules import XLMEmbedderModule
 
             boundary_token_fn = XLMEmbedderModule.apply_boundary_tokens
+        elif args.input_module.startswith("albert-"):
+            from jiant.pytorch_transformers_interface.modules import AlbertEmbedderModule
+
+            boundary_token_fn = AlbertEmbedderModule.apply_boundary_tokens
         else:
             boundary_token_fn = utils.apply_standard_boundary_tokens
 

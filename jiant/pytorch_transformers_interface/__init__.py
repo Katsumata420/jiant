@@ -26,6 +26,7 @@ def input_module_uses_pytorch_transformers(input_module):
         or input_module.startswith("openai-gpt")
         or input_module.startswith("transfo-xl-")
         or input_module.startswith("xlm-")
+        or input_module.startswith("albert-")
     )
 
 
@@ -61,5 +62,13 @@ def input_module_tokenizer_name(input_module):
         "xlm-mlm-enro-1024": "xlm_enro",
         "xlm-mlm-tlm-xnli15-1024": "xlm_xnli",
         "xlm-mlm-xnli15-1024": "xlm_xnli",
+        "albert-base-v1": "albert_v1",
+        "albert-large-v1": "albert_v1",
+        "albert-xlarge-v1": "albert_v1",
+        "albert-xxlarge-v1": "albert_v1",
+        "albert-base-v2": "albert_v2",
+        "albert-large-v2": "albert_v2",
+        "albert-xlarge-v2": "albert_v2",
+        "albert-xxlarge-v2": "albert_v2"
     }
     return input_module_to_pretokenized[input_module]

@@ -19,6 +19,7 @@ from transformers import (
     GPT2Tokenizer,
     TransfoXLTokenizer,
     XLMTokenizer,
+    AlbertTokenizer,
 )
 
 
@@ -94,6 +95,8 @@ def get_tokenizer(tokenizer_name):
         tokenizer = MosesTokenizer()
     elif tokenizer_name.startswith("xlm-"):
         tokenizer = XLMTokenizer.from_pretrained(tokenizer_name)
+    elif tokenizer_name.startswith("albert-"):
+        tokenizer = AlbertTokenizer.from_pretrained(tokenizer_name)
     elif tokenizer_name == "MosesTokenizer":
         tokenizer = MosesTokenizer()
     elif tokenizer_name == "SplitChars":
