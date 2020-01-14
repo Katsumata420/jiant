@@ -26,8 +26,8 @@ export JIANT_PROJECT_PREFIX=./project
 
 # Base directory in which to look for raw data subdirectories. This
 # could be the glue_data directory created by download_glue_data.py.
-# export JIANT_DATA_DIR=./data/glue
-export JIANT_DATA_DIR=../another_data
+export JIANT_DATA_DIR=./data/glue
+# export JIANT_DATA_DIR=../another_data
 
 # A word embeddings file in GloVe/fastText format. Not used when using
 # ELMo, GPT, or BERT. To use more than one different set of embeddings
@@ -39,3 +39,6 @@ export WORD_EMBS_FILE=./pretrained_model/w2v/glove.840B.300d.txt
 
 # Optional:
 # echo "Loaded custom config."
+
+# BERT-like model dest for cache by transformers
+export PYTORCH_PRETRAINED_BERT_CACHE=./transfomers_pretrained
